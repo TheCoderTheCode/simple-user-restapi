@@ -1,10 +1,17 @@
-import express, { Request, Response } from "express"
+import express, { Application, Request, Response } from "express"
 import mongoose from "mongoose"
+import bodyParser from "body-parser"
 import { StatusCodes } from "http-status-codes"
 
 import "dotenv/config"
 
-const app = express()
+const app: Application = express()
+
+/**
+ * Body Parser Middleware to format json content
+ * Content-Type: application/json
+ */
+app.use(bodyParser.json())
 
 // Default middleware to show a Hello World message
 app.get("/", (req: Request, res: Response) => {
