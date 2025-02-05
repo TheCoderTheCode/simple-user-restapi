@@ -2,8 +2,17 @@ import express, { Application, Request, Response } from "express"
 import mongoose from "mongoose"
 import bodyParser from "body-parser"
 import { StatusCodes } from "http-status-codes"
+import { userRoutes } from "@/router"
 
 import "dotenv/config"
+import { MongoUserRepository } from "@/repositories"
+import { UserService } from "@/services"
+import { UserController } from "@/controllers"
+
+// Dependency Injection
+const userRepository = new MongoUserRepository()
+const userService = new UserService(userRepository)
+const userController = new UserController(userService)
 
 const app: Application = express()
 
@@ -22,6 +31,11 @@ app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization")
   next()
 })
+
+/**
+ * Api V1 route for user
+ */
+app.use("/api/v1", userRoutes(userController))
 
 // Default middleware to show a Hello World message
 app.get("/", (req: Request, res: Response) => {
