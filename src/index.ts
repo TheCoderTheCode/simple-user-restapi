@@ -1,6 +1,8 @@
 import express, { Request, Response } from "express"
-import "dotenv/config"
+import mongoose from "mongoose"
 import { StatusCodes } from "http-status-codes"
+
+import "dotenv/config"
 
 const app = express()
 
@@ -9,6 +11,16 @@ app.get("/", (req: Request, res: Response) => {
   res.status(StatusCodes.OK).send("<h1>Hello World!</h1>")
 })
 
-app.listen(process.env.PORT, () =>
-  console.log(`[server]: server is running on port ${process.env.PORT}`),
-)
+const main = async () => {
+  try {
+    await mongoose.connect(process.env.DATABASE_URL!)
+
+    app.listen(process.env.PORT, () =>
+      console.log(`[server]: server is running on port ${process.env.PORT}`),
+    )
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+main()
