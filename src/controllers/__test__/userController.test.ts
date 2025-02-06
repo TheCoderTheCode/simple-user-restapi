@@ -39,6 +39,23 @@ describe("UserController", () => {
     expect(res.json).toHaveBeenCalledWith({ id: "123" })
   })
 
+  it("should responde with error 500 if throws any error while creating a user", async () => {
+    const user = { name: "John Doe", email: "john.doe@example.com" }
+
+    userServiceMock.createUser.mockRejectedValue(undefined)
+
+    const req = { body: user } as unknown as Request
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    } as unknown as Response
+
+    await userController.createUser(req, res)
+
+    expect(res.status).toHaveBeenCalledWith(StatusCodes.INTERNAL_SERVER_ERROR)
+    expect(res.json).toHaveBeenCalledTimes(1)
+  })
+
   it("should be able to retrieve all users", async () => {
     const users = [
       { _id: "123", name: "John Doe", email: "john.doe@test.com" },
@@ -59,6 +76,21 @@ describe("UserController", () => {
     expect(res.json).toHaveBeenCalledWith(users)
   })
 
+  it("should response with error 500 if throws any error while trying to retrieve all users", async () => {
+    userServiceMock.getAllUsers.mockRejectedValue(undefined)
+
+    const req = {} as Request
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    } as unknown as Response
+
+    await userController.getAllUsers(req, res)
+
+    expect(res.status).toHaveBeenCalledWith(StatusCodes.INTERNAL_SERVER_ERROR)
+    expect(res.json).toHaveBeenCalledTimes(1)
+  })
+
   it("should be able to return a user by its ID", async () => {
     const user = { _id: "123", name: "John Doe", email: "john.doe@test.com" }
 
@@ -74,6 +106,36 @@ describe("UserController", () => {
 
     expect(res.status).toHaveBeenCalledWith(StatusCodes.OK)
     expect(res.json).toHaveBeenCalledWith(user)
+  })
+
+  it("should response with error 400 if do not found any user with the specific ID", async () => {
+    userServiceMock.getUserById.mockResolvedValue(null)
+
+    const req = { params: { id: "123" } } as unknown as Request
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    } as unknown as Response
+
+    await userController.getUserById(req, res)
+
+    expect(res.status).toHaveBeenCalledWith(StatusCodes.BAD_REQUEST)
+    expect(res.json).toHaveBeenCalledTimes(1)
+  })
+
+  it("should response with error 500 if throws any error while trying to get the user by its ID", async () => {
+    userServiceMock.getUserById.mockRejectedValue(undefined)
+
+    const req = { params: { id: "123" } } as unknown as Request
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    } as unknown as Response
+
+    await userController.getUserById(req, res)
+
+    expect(res.status).toHaveBeenCalledWith(StatusCodes.INTERNAL_SERVER_ERROR)
+    expect(res.json).toHaveBeenCalledTimes(1)
   })
 
   it("should be able to update a user", async () => {
@@ -100,6 +162,42 @@ describe("UserController", () => {
     expect(res.json).toHaveBeenCalledWith({ id: "123" })
   })
 
+  it("should send a response with statusCode 400 if could not update the user", async () => {
+    userServiceMock.updateUser.mockResolvedValue(null)
+
+    const req = {
+      params: { id: "123" },
+      body: { email: "john.update.doe@test.com" },
+    } as unknown as Request
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    } as unknown as Response
+
+    await userController.updateUser(req, res)
+
+    expect(res.status).toHaveBeenCalledWith(StatusCodes.BAD_REQUEST)
+    expect(res.json).toHaveBeenCalledTimes(1)
+  })
+
+  it("should send a response with statusCode 500 if throws any error while trying to update a user", async () => {
+    userServiceMock.updateUser.mockRejectedValue(undefined)
+
+    const req = {
+      params: { id: "123" },
+      body: { email: "john.update.doe@test.com" },
+    } as unknown as Request
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    } as unknown as Response
+
+    await userController.updateUser(req, res)
+
+    expect(res.status).toHaveBeenCalledWith(StatusCodes.INTERNAL_SERVER_ERROR)
+    expect(res.json).toHaveBeenCalledTimes(1)
+  })
+
   it("should be able to delete a user", async () => {
     const deletedUser = {
       _id: "123",
@@ -119,5 +217,35 @@ describe("UserController", () => {
 
     expect(res.status).toHaveBeenCalledWith(StatusCodes.OK)
     expect(res.json).toHaveBeenCalledWith({ id: "123" })
+  })
+
+  it("should send a response with statusCode 400 if could not delete the user", async () => {
+    userServiceMock.deleteUser.mockResolvedValue(null)
+
+    const req = { params: { id: "123" } } as unknown as Request
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    } as unknown as Response
+
+    await userController.deleteUser(req, res)
+
+    expect(res.status).toHaveBeenCalledWith(StatusCodes.BAD_REQUEST)
+    expect(res.json).toHaveBeenCalledTimes(1)
+  })
+
+  it("should send a response with statusCode 500 if throws any error while trying to delete the user", async () => {
+    userServiceMock.deleteUser.mockRejectedValue(undefined)
+
+    const req = { params: { id: "123" } } as unknown as Request
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    } as unknown as Response
+
+    await userController.deleteUser(req, res)
+
+    expect(res.status).toHaveBeenCalledWith(StatusCodes.INTERNAL_SERVER_ERROR)
+    expect(res.json).toHaveBeenCalledTimes(1)
   })
 })
