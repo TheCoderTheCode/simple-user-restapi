@@ -1,6 +1,5 @@
 import express, { Application, Request, Response } from "express"
 import mongoose from "mongoose"
-import bodyParser from "body-parser"
 import { StatusCodes } from "http-status-codes"
 import { userRoutes } from "@/router"
 
@@ -20,7 +19,7 @@ const app: Application = express()
  * Body Parser Middleware to format json content
  * Content-Type: application/json
  */
-app.use(bodyParser.json())
+app.use(express.json())
 
 /**
  * CORS configuration and allowed methods and headers definition
