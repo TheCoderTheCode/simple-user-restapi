@@ -9,6 +9,7 @@ describe("UserService", () => {
 
   beforeAll(() => {
     userRepositoryMock = new (jest.fn(() => ({
+      findOneBy: jest.fn(),
       findAll: jest.fn(),
       findById: jest.fn(),
       create: jest.fn(),

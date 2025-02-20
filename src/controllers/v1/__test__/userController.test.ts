@@ -11,6 +11,7 @@ describe("UserController", () => {
 
   beforeAll(() => {
     userServiceMock = new (jest.fn(() => ({
+      findOneBy: jest.fn(),
       getAllUsers: jest.fn(),
       getUserById: jest.fn(),
       createUser: jest.fn(),
@@ -36,7 +37,10 @@ describe("UserController", () => {
     await userController.createUser(req, res)
 
     expect(res.status).toHaveBeenCalledWith(StatusCodes.CREATED)
-    expect(res.json).toHaveBeenCalledWith({ id: "123" })
+    expect(res.json).toHaveBeenCalledWith({
+      id: "123",
+      message: "User created successfully",
+    })
   })
 
   it("should responde with error 500 if throws any error while creating a user", async () => {

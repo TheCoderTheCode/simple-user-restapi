@@ -2,6 +2,10 @@ import { User } from "@/models"
 import { IUser, IUserRepository } from "@/types"
 
 export default class MongoUserRepository implements IUserRepository {
+  async findOneBy(property: string, value: string): Promise<IUser | null> {
+    return User.findOne({ [property]: value }).exec()
+  }
+
   async findById(id: string): Promise<IUser | null> {
     return User.findById(id).exec()
   }

@@ -41,7 +41,9 @@ export default class UserController {
         email,
         password,
       })
-      res.status(StatusCodes.CREATED).json({ id: newUser._id })
+      res
+        .status(StatusCodes.CREATED)
+        .json({ message: "User created successfully", id: newUser._id })
     } catch (error) {
       res
         .status(StatusCodes.INTERNAL_SERVER_ERROR)

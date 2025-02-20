@@ -1,17 +1,18 @@
 import express, { Application, Request, Response } from "express"
 import mongoose from "mongoose"
 import { StatusCodes } from "http-status-codes"
-import { userRoutes } from "@/router"
+import { authenticationRoutes, userRoutes } from "@/router"
 
 import "dotenv/config"
 import { MongoUserRepository } from "@/repositories"
 import { UserService } from "@/services"
-import { UserController } from "@/controllers"
+import { AuthenticationController, UserController } from "@/controllers"
 
 // Dependency Injection
 const userRepository = new MongoUserRepository()
 const userService = new UserService(userRepository)
 const userController = new UserController(userService)
+const authenticationController = new AuthenticationController(userService)
 
 const app: Application = express()
 
@@ -35,6 +36,7 @@ app.use((req, res, next) => {
  * Api V1 route for user
  */
 app.use("/api/v1", userRoutes(userController))
+app.use("/api/v1", authenticationRoutes(authenticationController))
 
 // Default middleware to show a Hello World message
 app.get("/", (req: Request, res: Response) => {

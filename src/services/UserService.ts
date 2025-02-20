@@ -3,6 +3,10 @@ import { IUserRepository, IUserService, IUser } from "@/types"
 export default class UserService implements IUserService {
   constructor(private readonly userRepository: IUserRepository) {}
 
+  async findOneBy(property: string, value: string): Promise<IUser | null> {
+    return this.userRepository.findOneBy(property, value)
+  }
+
   async getAllUsers(): Promise<IUser[]> {
     return this.userRepository.findAll()
   }
