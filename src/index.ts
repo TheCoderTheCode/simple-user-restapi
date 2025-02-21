@@ -7,6 +7,7 @@ import "dotenv/config"
 import { MongoUserRepository } from "@/repositories"
 import { UserService } from "@/services"
 import { AuthenticationController, UserController } from "@/controllers"
+import helmet from "helmet"
 
 // Dependency Injection
 const userRepository = new MongoUserRepository()
@@ -15,6 +16,12 @@ const userController = new UserController(userService)
 const authenticationController = new AuthenticationController(userService)
 
 const app: Application = express()
+
+/**
+ * Helmet
+ * Set up headers for secury the api
+ */
+app.use(helmet())
 
 /**
  * Body Parser Middleware to format json content
